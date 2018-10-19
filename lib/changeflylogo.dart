@@ -12,6 +12,8 @@ class _ChangeFlyLogoState extends State<ChangeFlyLogo>
 
   AnimationController firstAnimationController;
   AnimationController secondAnimationController;
+  AnimationController thirdAnimationController;
+
 
   //Top section animations
   Animation topTranslateAnim;
@@ -27,6 +29,9 @@ class _ChangeFlyLogoState extends State<ChangeFlyLogo>
   Animation rightTranslateAnim;
   Animation rightRotationXAnim;
   Animation rightRotationYAnim;
+
+  //Title section animations
+  Animation titleOpacityAnimation;
 
   //Whole Logo
   Animation opacityAnimation;
@@ -47,6 +52,8 @@ class _ChangeFlyLogoState extends State<ChangeFlyLogo>
     firstAnimationController.addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.completed) {
         secondAnimationController.forward(from: 0.0);
+      } else if (status == AnimationStatus.forward) {
+        thirdAnimationController.value = 0.0;
       }
     });
 
@@ -60,14 +67,22 @@ class _ChangeFlyLogoState extends State<ChangeFlyLogo>
     secondAnimationController.addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.completed) {
         secondAnimationController.reverse(from: 1.0);
+        thirdAnimationController.forward(from: 0.0);
       }
     });
+
+    thirdAnimationController = new AnimationController(
+        vsync: this, duration: new Duration(milliseconds: 300));
+    thirdAnimationController.addListener(() {
+      setState(() {});
+    });
+    thirdAnimationController.value = 0.0;
 
     //Top section animations
     topTranslateAnim =
         new Tween(begin: const Offset(0.0, -280.0), end: const Offset(0.0, 0.0))
             .animate(new CurvedAnimation(
-                parent: firstAnimationController, curve: myCurve));
+            parent: firstAnimationController, curve: myCurve));
 
     //Left section animations
     leftScaleAnim = new Tween(begin: 3.0, end: 1.0).animate(new CurvedAnimation(
@@ -104,6 +119,11 @@ class _ChangeFlyLogoState extends State<ChangeFlyLogo>
         new CurvedAnimation(
             parent: firstAnimationController, curve: Curves.linear));
 
+    //Title section animations
+    titleOpacityAnimation = new Tween(begin: 0.0, end: 1.0).animate(
+        new CurvedAnimation(
+            parent: thirdAnimationController, curve: Curves.linear));
+
     //Whole View
     opacityAnimation = new Tween(begin: 0.0, end: 1.0).animate(
         new CurvedAnimation(
@@ -122,47 +142,66 @@ class _ChangeFlyLogoState extends State<ChangeFlyLogo>
       onTap: () {
         firstAnimationController.forward(from: 0.0);
       },
-      child: SizedBox(
-        width: size,
-        height: size,
-        child: Transform.scale(
-          scale: shakeAnimation.value,
-          child: Opacity(
-            opacity: opacityAnimation.value,
-            child: Stack(
-              children: <Widget>[
-                Transform(
-                  transform: Matrix4.identity()
-                    ..translate(
-                        topTranslateAnim.value.dx, topTranslateAnim.value.dy),
-                  child: Image.asset("assets/images/logo/changefly-cube-top.png"),
-                ),
-                Transform(
-                  alignment: Alignment(-0.75, 0.1),
-                  transform: Matrix4.identity()
-                    ..translate(
-                        leftTranslateAnim.value.dx, leftTranslateAnim.value.dy)
-                    ..scale(leftScaleAnim.value)
-                    ..rotateX(leftRotationXAnim.value)
-                    ..rotateY(leftRotationYAnim.value),
-                  child:
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(
+            width: size,
+            height: size,
+            child: Transform.scale(
+              scale: shakeAnimation.value,
+              child: Opacity(
+                opacity: opacityAnimation.value,
+                child: Stack(
+                  children: <Widget>[
+                    Transform(
+                      transform: Matrix4.identity()
+                        ..translate(
+                            topTranslateAnim.value.dx,
+                            topTranslateAnim.value.dy),
+                      child: Image.asset(
+                          "assets/images/logo/changefly-cube-top.png"),
+                    ),
+                    Transform(
+                      alignment: Alignment(-0.75, 0.1),
+                      transform: Matrix4.identity()
+                        ..translate(
+                            leftTranslateAnim.value.dx,
+                            leftTranslateAnim.value.dy)
+                        ..scale(leftScaleAnim.value)
+                        ..rotateX(leftRotationXAnim.value)
+                        ..rotateY(leftRotationYAnim.value),
+                      child:
                       Image.asset("assets/images/logo/changefly-cube-left.png"),
+                    ),
+                    Transform(
+                      alignment: Alignment(0.75, 0.1),
+                      transform: Matrix4.identity()
+                        ..translate(
+                            rightTranslateAnim.value.dx,
+                            rightTranslateAnim.value.dx)
+                        ..scale(rightScaleAnim.value)
+                        ..rotateX(rightRotationXAnim.value)
+                        ..rotateY(rightRotationYAnim.value),
+                      child:
+                      Image.asset(
+                          "assets/images/logo/changefly-cube-right.png"),
+                    ),
+                  ],
                 ),
-                Transform(
-                  alignment: Alignment(0.75, 0.1),
-                  transform: Matrix4.identity()
-                    ..translate(
-                        rightTranslateAnim.value.dx, rightTranslateAnim.value.dx)
-                    ..scale(rightScaleAnim.value)
-                    ..rotateX(rightRotationXAnim.value)
-                    ..rotateY(rightRotationYAnim.value),
-                  child:
-                      Image.asset("assets/images/logo/changefly-cube-right.png"),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
+          Opacity(
+            opacity: titleOpacityAnimation.value,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: Image.asset(
+                "assets/images/logo/changefly-name.png", width: size * 1.3,),
+            ),
+          )
+        ],
       ),
     );
   }
