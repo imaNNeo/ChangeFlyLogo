@@ -1,6 +1,7 @@
+import 'package:change_fly_logo/sample2/sample2page.dart';
 import 'package:flutter/material.dart';
 import 'changeflylogo.dart';
-import 'samplespage.dart';
+import 'package:change_fly_logo/sample1/sample1page.dart';
 
 void main() => runApp(new MaterialApp(
   home: HomePage(),
@@ -29,9 +30,17 @@ class HomePage extends StatelessWidget {
               padding: EdgeInsets.only(bottom: 20.0),
               child: Align(
                 alignment: Alignment.bottomCenter,
-                child: RaisedButton(onPressed: (){
-                  Navigator.of(context).push(new MaterialPageRoute(builder: (context) { return new SamplesPages();}));
-                }, child: Text('Alternative Sample 1', style: TextStyle(color: Colors.purple),),),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    RaisedButton(onPressed: (){
+                      Navigator.of(context).push(new MaterialPageRoute(builder: (context) { return new Sample1Page();}));
+                    }, child: Text('Sample 1', style: TextStyle(color: Colors.purple),),),
+                    RaisedButton(onPressed: (){
+                      Navigator.of(context).push(new MaterialPageRoute(builder: (context) { return new Sample2Page();}));
+                    }, child: Text('Sample 2', style: TextStyle(color: Colors.purple),),)
+                  ],
+                ),
               ),
             )
           ],

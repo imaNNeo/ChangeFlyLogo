@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as Math;
 
-class Sample1 extends StatefulWidget {
+class Sample2 extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _Sample1State();
+  State<StatefulWidget> createState() => _Sample2State();
 }
 
-class _Sample1State extends State<Sample1> with TickerProviderStateMixin {
+class _Sample2State extends State<Sample2> with TickerProviderStateMixin {
   final double size = 200.0;
   AnimationController topController, rightController, leftController;
 
@@ -19,13 +19,12 @@ class _Sample1State extends State<Sample1> with TickerProviderStateMixin {
     super.initState();
     int duration = 260;
 
-    double distance = 16.0;
+    double scaleTo = 1.1;
 
     topController = new AnimationController(
         vsync: this, duration: Duration(milliseconds: duration));
-    double topAngle = -90.0;
     topAnimation =
-        new Tween(begin: Offset.zero, end: getOffset(topAngle, distance))
+        new Tween(begin: 1.0, end: scaleTo)
             .animate(CurvedAnimation(parent: topController, curve: Curves.easeInOut));
     topController.addListener((){setState(() {});});
     topController.addStatusListener((AnimationStatus status) {
@@ -37,9 +36,8 @@ class _Sample1State extends State<Sample1> with TickerProviderStateMixin {
 
     rightController = new AnimationController(
         vsync: this, duration: Duration(milliseconds: duration));
-    double rightAngle = 30.0;
     rightAnimation =
-        new Tween(begin: Offset.zero, end: getOffset(rightAngle, distance))
+        new Tween(begin: 1.0, end: scaleTo)
             .animate(CurvedAnimation(parent: rightController, curve: Curves.easeInOut));
     rightController.addListener((){setState(() {});});
     rightController.addStatusListener((AnimationStatus status) {
@@ -51,9 +49,8 @@ class _Sample1State extends State<Sample1> with TickerProviderStateMixin {
 
     leftController = new AnimationController(
         vsync: this, duration: Duration(milliseconds: duration));
-    double leftAngle = 150.0;
     leftAnimation =
-        new Tween(begin: Offset.zero, end: getOffset(leftAngle, distance))
+        new Tween(begin: 1.0, end: scaleTo)
             .animate(CurvedAnimation(parent: leftController, curve: Curves.easeInOut));
     leftController.addListener((){setState(() {});});
     leftController.addStatusListener((AnimationStatus status) {
@@ -66,45 +63,30 @@ class _Sample1State extends State<Sample1> with TickerProviderStateMixin {
     topController.forward(from: 0.0);
   }
 
-  Offset getOffset(double angle, double distance) {
-    double x = Math.cos(degToRad(angle)) * distance;
-    double y = Math.sin(degToRad(angle)) * distance;
-    return new Offset(x, y);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Sample 1"),
-      ),
-      body: Center(
-        child: SizedBox(
+    return SizedBox(
             width: size,
             height: size,
             child: Stack(
               children: <Widget>[
-                Transform(
+                Transform(alignment: Alignment.center,
                     transform: Matrix4.identity()
-                      ..translate(
-                          topAnimation.value.dx, topAnimation.value.dy),
+                      ..scale(topAnimation.value, topAnimation.value),
                     child: Image.asset(
                         "assets/images/logo/changefly-cube-top.png")),
-                Transform(
+                Transform(alignment: Alignment.center,
                     transform: Matrix4.identity()
-                      ..translate(
-                          rightAnimation.value.dx, rightAnimation.value.dy),
+                      ..scale(rightAnimation.value, rightAnimation.value),
                     child: Image.asset(
                         "assets/images/logo/changefly-cube-right.png")),
-                Transform(
+                Transform(alignment: Alignment.center,
                     transform: Matrix4.identity()
-                      ..translate(
-                          leftAnimation.value.dx, leftAnimation.value.dy),
+                      ..scale(leftAnimation.value, leftAnimation.value),
                     child: Image.asset(
                         "assets/images/logo/changefly-cube-left.png")),
               ],
-            )),
-      ),
+            )
     );
   }
 
@@ -115,8 +97,5 @@ class _Sample1State extends State<Sample1> with TickerProviderStateMixin {
     rightController.dispose();
     leftController.dispose();
   }
-
-  num degToRad(num deg) => deg * (Math.pi / 180.0);
-  num radToDeg(num rad) => rad * (180.0 / Math.pi);
 
 }
