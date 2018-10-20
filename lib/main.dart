@@ -31,7 +31,7 @@ class HomePage extends StatelessWidget {
                 alignment: Alignment.bottomCenter,
                 child: RaisedButton(onPressed: (){
                   Navigator.of(context).push(new MaterialPageRoute(builder: (context) { return new SamplesPages();}));
-                }, child: Text('My Alternative Samples', style: TextStyle(color: Colors.purple),),),
+                }, child: Text('Alternative Sample 1', style: TextStyle(color: Colors.purple),),),
               ),
             )
           ],
