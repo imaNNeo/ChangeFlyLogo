@@ -10,6 +10,11 @@ void main() => runApp(new MaterialApp(
 
 class HomePage extends StatelessWidget {
 
+  /*
+  * All of the magic is inside the ChangeFlyLogo()
+  * and  to read the animation related codes, go and read
+  * changeflylogo.dart
+  * */
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,6 +32,7 @@ class HomePage extends StatelessWidget {
                 child: Text("Click on logo to animate", style: TextStyle(color: Colors.purple, fontSize: 24.0, fontWeight: FontWeight.bold),),
               ),
             ),
+            /*Here we have three buttons corresponds to each sample (three sample is exists)*/
             Padding(
               padding: EdgeInsets.only(bottom: 20.0),
               child: Align(

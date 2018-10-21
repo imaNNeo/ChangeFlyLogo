@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+/*This is mimic of website animation
+and i tried to implement very like as website version
+*/
 class ChangeFlyLogo extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ChangeFlyLogoState();
@@ -10,33 +13,65 @@ class _ChangeFlyLogoState extends State<ChangeFlyLogo>
     with TickerProviderStateMixin {
   final double size = 200.0;
 
+  /*
+  * We have 3 animation controller
+  * first is entering cube animation
+  * second is shake cube animation
+  * third is fade in logo name
+  * and these controllers should run sequentially,
+  * and the third controller will be 0.0 at any time before its run,
+  * because logo should be invisible and after all of entering animations
+  * it should be visible.
+  * */
   AnimationController firstAnimationController;
   AnimationController secondAnimationController;
   AnimationController thirdAnimationController;
 
 
   //Top section animations
+  /*
+  * This is just a translate animation from top to bot
+  * */
   Animation topTranslateAnim;
 
   //Left section animations
+  /*
+  * Here we have animations related to left section of cube
+  * */
   Animation leftScaleAnim;
   Animation leftTranslateAnim;
   Animation leftRotationXAnim;
   Animation leftRotationYAnim;
 
   //Right section animations
+  /*
+  * Here we have animations related to right section of cube
+  * */
   Animation rightScaleAnim;
   Animation rightTranslateAnim;
   Animation rightRotationXAnim;
   Animation rightRotationYAnim;
 
-  //Title section animations
-  Animation titleOpacityAnimation;
-
   //Whole Logo
+  /*
+  * We have an opacity animation on whole view,
+  * and shake animation when cube sections is merged together
+  * */
   Animation opacityAnimation;
   Animation shakeAnimation;
 
+
+  //Title section animations
+  /*
+  * After all animations whe show the title on logo with fadeIn animation
+  * */
+  Animation titleOpacityAnimation;
+
+  /*
+  * This is a custom Curve to satisfy our animation,
+  * that i grabbed it from this website :
+  * http://cubic-bezier.com/#.45,-0.12,1,.85
+  * */
   Curve myCurve = Cubic(0.45, -0.12, 1.0, 0.85);
 
   @override
@@ -119,11 +154,6 @@ class _ChangeFlyLogoState extends State<ChangeFlyLogo>
         new CurvedAnimation(
             parent: firstAnimationController, curve: Curves.linear));
 
-    //Title section animations
-    titleOpacityAnimation = new Tween(begin: 0.0, end: 1.0).animate(
-        new CurvedAnimation(
-            parent: thirdAnimationController, curve: Curves.linear));
-
     //Whole View
     opacityAnimation = new Tween(begin: 0.0, end: 1.0).animate(
         new CurvedAnimation(
@@ -132,6 +162,11 @@ class _ChangeFlyLogoState extends State<ChangeFlyLogo>
     shakeAnimation = new Tween(begin: 1.0, end: 1.05).animate(
         new CurvedAnimation(
             parent: secondAnimationController, curve: Curves.fastOutSlowIn));
+
+    //Title section animations
+    titleOpacityAnimation = new Tween(begin: 0.0, end: 1.0).animate(
+        new CurvedAnimation(
+            parent: thirdAnimationController, curve: Curves.linear));
 
     firstAnimationController.forward(from: 0.0);
   }
@@ -155,88 +190,82 @@ class _ChangeFlyLogoState extends State<ChangeFlyLogo>
                 opacity: opacityAnimation.value,
                 child: Stack(
                   children: <Widget>[
-                    Transform(
-                      transform: Matrix4.identity()
-                        ..translate(
-                            topTranslateAnim.value.dx,
-                            topTranslateAnim.value.dy),
-                      child: Image.asset(
-                          "assets/images/logo/changefly-cube-top.png"),
-                    ),
-                    Transform(
-                      alignment: Alignment(-0.75, 0.1),
-                      transform: Matrix4.identity()
-                        ..translate(
-                            leftTranslateAnim.value.dx,
-                            leftTranslateAnim.value.dy)
-                        ..scale(leftScaleAnim.value)
-                        ..rotateX(leftRotationXAnim.value)
-                        ..rotateY(leftRotationYAnim.value),
-                      child:
-                      Image.asset("assets/images/logo/changefly-cube-left.png"),
-                    ),
-                    Transform(
-                      alignment: Alignment(0.75, 0.1),
-                      transform: Matrix4.identity()
-                        ..translate(
-                            rightTranslateAnim.value.dx,
-                            rightTranslateAnim.value.dx)
-                        ..scale(rightScaleAnim.value)
-                        ..rotateX(rightRotationXAnim.value)
-                        ..rotateY(rightRotationYAnim.value),
-                      child:
-                      Image.asset(
-                          "assets/images/logo/changefly-cube-right.png"),
-                    ),
+                    topSection(),
+                    leftSection(),
+                    rightSection(),
                   ],
                 ),
               ),
             ),
           ),
-          Opacity(
-            opacity: titleOpacityAnimation.value,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: Image.asset(
-                "assets/images/logo/changefly-name.png", width: size * 1.3,),
-            ),
-          )
+          titleSection(),
         ],
       ),
     );
   }
 
+  Widget topSection() {
+    return Transform(
+      transform: Matrix4.identity()
+        ..translate(
+            topTranslateAnim.value.dx,
+            topTranslateAnim.value.dy),
+      child: Image.asset(
+          "assets/images/logo/changefly-cube-top.png"),
+    );
+  }
+
+  Widget leftSection() {
+    return Transform(
+      alignment: Alignment(-0.75, 0.1),
+      transform: Matrix4.identity()
+        ..translate(
+            leftTranslateAnim.value.dx,
+            leftTranslateAnim.value.dy)
+        ..scale(leftScaleAnim.value)
+        ..rotateX(leftRotationXAnim.value)
+        ..rotateY(leftRotationYAnim.value),
+      child:
+      Image.asset("assets/images/logo/changefly-cube-left.png"),
+    );
+  }
+
+  Widget rightSection() {
+    return Transform(
+      alignment: Alignment(0.75, 0.1),
+      transform: Matrix4.identity()
+        ..translate(
+            rightTranslateAnim.value.dx,
+            rightTranslateAnim.value.dx)
+        ..scale(rightScaleAnim.value)
+        ..rotateX(rightRotationXAnim.value)
+        ..rotateY(rightRotationYAnim.value),
+      child:
+      Image.asset(
+          "assets/images/logo/changefly-cube-right.png"),
+    );
+  }
+
+  Widget titleSection() {
+    return Opacity(
+      opacity: titleOpacityAnimation.value,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 20.0),
+        child: Image.asset(
+          "assets/images/logo/changefly-name.png", width: size * 1.3,),
+      ),
+    );
+  }
+
+  /*
+  * We have to dispose our controllers
+  * */
   @override
   void dispose() {
     super.dispose();
     firstAnimationController.dispose();
     secondAnimationController.dispose();
-  }
-}
-
-class MyCurve extends Curve {
-  const MyCurve([this.period = 0.4]);
-
-  final double period;
-
-  @override
-  double transform(double t) {
-    assert(t >= 0.0 && t <= 1.0);
-    final double s = 0.1;
-    t = t - 1.0;
-    return -math.pow(2.0, 10.0 * t) *
-        math.sin((t - s) * (math.pi * 2.0) / period);
+    thirdAnimationController.dispose();
   }
 
-  @override
-  String toString() {
-    return '$runtimeType($period)';
-  }
-}
-
-class ShakeCurve extends Curve {
-  @override
-  double transform(double t) {
-    return math.sin(t * math.pi * 2);
-  }
 }
