@@ -10,6 +10,13 @@ class _Sample1State extends State<Sample1> with TickerProviderStateMixin {
   final double size = 200.0;
   AnimationController topController, rightController, leftController;
 
+  /*
+  * This animation considered for loading and indeterminate progresses.
+  * in this sample we have three animation that run sequentially,
+  * and repeat infinite.
+  * each section of the cube will move toward to their angle and back to initial position.
+  * and the angles are -90, 30, 150 respectively top, right, left;
+  * */
   Animation topAnimation;
   Animation rightAnimation;
   Animation leftAnimation;
@@ -17,8 +24,18 @@ class _Sample1State extends State<Sample1> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
+    /*
+    * Duration to move each cube section,
+    * the back animation have separate duration,
+    * at all (duration * 2) will take to move and back each section
+    * */
     int duration = 260;
 
+    /*
+    * Distance to move each cube's section,
+    * and all of them has equal distance to animate
+    * */
     double distance = 16.0;
 
     topController = new AnimationController(
@@ -66,6 +83,10 @@ class _Sample1State extends State<Sample1> with TickerProviderStateMixin {
     topController.forward(from: 0.0);
   }
 
+  /*
+  * To find out the target position of each section according to their angle,
+  * and distance, (the distance is constant in our sample)
+  * */
   Offset getOffset(double angle, double distance) {
     double x = Math.cos(degToRad(angle)) * distance;
     double y = Math.sin(degToRad(angle)) * distance;
@@ -79,29 +100,44 @@ class _Sample1State extends State<Sample1> with TickerProviderStateMixin {
             height: size,
             child: Stack(
               children: <Widget>[
-                Transform(
-                    transform: Matrix4.identity()
-                      ..translate(
-                          topAnimation.value.dx, topAnimation.value.dy),
-                    child: Image.asset(
-                        "assets/images/logo/changefly-cube-top.png")),
-                Transform(
-                    transform: Matrix4.identity()
-                      ..translate(
-                          rightAnimation.value.dx, rightAnimation.value.dy),
-                    child: Image.asset(
-                        "assets/images/logo/changefly-cube-right.png")),
-                Transform(
-                    transform: Matrix4.identity()
-                      ..translate(
-                          leftAnimation.value.dx, leftAnimation.value.dy),
-                    child: Image.asset(
-                        "assets/images/logo/changefly-cube-left.png")),
+                topSection(),
+                rightSection(),
+                leftSection(),
               ],
             ),
     );
   }
 
+  Widget topSection () {
+    return Transform(
+        transform: Matrix4.identity()
+          ..translate(
+              topAnimation.value.dx, topAnimation.value.dy),
+        child: Image.asset(
+            "assets/images/logo/changefly-cube-top.png"));
+  }
+
+  Widget rightSection() {
+    return Transform(
+        transform: Matrix4.identity()
+          ..translate(
+              rightAnimation.value.dx, rightAnimation.value.dy),
+        child: Image.asset(
+            "assets/images/logo/changefly-cube-right.png"));
+  }
+
+  Widget leftSection() {
+    return Transform(
+        transform: Matrix4.identity()
+          ..translate(
+              leftAnimation.value.dx, leftAnimation.value.dy),
+        child: Image.asset(
+            "assets/images/logo/changefly-cube-left.png"));
+  }
+
+  /*
+  * We should dispose our controllers to prevent leak memory and other consequences
+  * */
   @override
   void dispose() {
     super.dispose();
@@ -110,6 +146,10 @@ class _Sample1State extends State<Sample1> with TickerProviderStateMixin {
     leftController.dispose();
   }
 
+  /*
+  * These are our utils
+  * because in sin / cos functions of Math we have to pass radian.
+  * */
   num degToRad(num deg) => deg * (Math.pi / 180.0);
   num radToDeg(num rad) => rad * (180.0 / Math.pi);
 

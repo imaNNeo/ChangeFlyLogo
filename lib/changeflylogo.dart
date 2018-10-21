@@ -258,7 +258,7 @@ class _ChangeFlyLogoState extends State<ChangeFlyLogo>
   }
 
   /*
-  * We have to dispose our controllers
+  * We should dispose our controllers to prevent leak memory and other consequences
   * */
   @override
   void dispose() {

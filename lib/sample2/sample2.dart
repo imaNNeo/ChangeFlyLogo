@@ -10,6 +10,12 @@ class _Sample2State extends State<Sample2> with TickerProviderStateMixin {
   final double size = 200.0;
   AnimationController topController, rightController, leftController;
 
+  /*
+  * This animation considered for loading and indeterminate progresses.
+  * in this sample we have three animation that run sequentially,
+  * and repeat infinite.
+  * each section of the cube's size will scale up and down back to initial size;
+  * */
   Animation topAnimation;
   Animation rightAnimation;
   Animation leftAnimation;
@@ -17,8 +23,16 @@ class _Sample2State extends State<Sample2> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
+    /*
+    * Duration that take to scale up
+    * and scale down (separately)
+    * */
     int duration = 260;
 
+    /*
+    * target size scale for all of sections of cube
+    * */
     double scaleTo = 1.1;
 
     topController = new AnimationController(
@@ -70,26 +84,41 @@ class _Sample2State extends State<Sample2> with TickerProviderStateMixin {
             height: size,
             child: Stack(
               children: <Widget>[
-                Transform(alignment: Alignment.center,
-                    transform: Matrix4.identity()
-                      ..scale(topAnimation.value, topAnimation.value),
-                    child: Image.asset(
-                        "assets/images/logo/changefly-cube-top.png")),
-                Transform(alignment: Alignment.center,
-                    transform: Matrix4.identity()
-                      ..scale(rightAnimation.value, rightAnimation.value),
-                    child: Image.asset(
-                        "assets/images/logo/changefly-cube-right.png")),
-                Transform(alignment: Alignment.center,
-                    transform: Matrix4.identity()
-                      ..scale(leftAnimation.value, leftAnimation.value),
-                    child: Image.asset(
-                        "assets/images/logo/changefly-cube-left.png")),
+                topSection(),
+                rightSection(),
+                leftSection(),
               ],
             )
     );
   }
 
+  Widget topSection() {
+    return Transform(alignment: Alignment.center,
+        transform: Matrix4.identity()
+          ..scale(topAnimation.value, topAnimation.value),
+        child: Image.asset(
+            "assets/images/logo/changefly-cube-top.png"));
+  }
+
+  Widget rightSection() {
+    return Transform(alignment: Alignment.center,
+        transform: Matrix4.identity()
+          ..scale(rightAnimation.value, rightAnimation.value),
+        child: Image.asset(
+            "assets/images/logo/changefly-cube-right.png"));
+  }
+
+  Widget leftSection() {
+    return Transform(alignment: Alignment.center,
+        transform: Matrix4.identity()
+          ..scale(leftAnimation.value, leftAnimation.value),
+        child: Image.asset(
+            "assets/images/logo/changefly-cube-left.png"));
+  }
+
+  /*
+  * We should dispose our controllers to prevent leak memory and other consequences
+  * */
   @override
   void dispose() {
     super.dispose();
