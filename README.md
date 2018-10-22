@@ -6,7 +6,6 @@
 
 ## My samples
 
-
-|First|Second|Third|
-|:---:|:---:|:---:|:---:|
-|<img src="./repo_files/first.gif" width="200">|<img src="./repo_files/second.gif" width="200">|<img src="./repo_files/third.gif" width="200">|
+| First                                          | Second                                          | Third                                          |
+| ---------------------------------------------- |:-----------------------------------------------:| ----------------------------------------------:|
+| <img src="./repo_files/first.gif" width="200"> | <img src="./repo_files/second.gif" width="200"> | <img src="./repo_files/third.gif" width="200"> |
